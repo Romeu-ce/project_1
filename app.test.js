@@ -40,4 +40,21 @@ test('POST /coaches створює нового тренера', async () => {
     birth_date: '1990-01-01',
     email: 'test@test.com',
     group_id: 1
-  }
+  });
+
+  expect(res.status).toBe(200);
+  expect(res.body.message).toBe('Coach created');
+  expect(res.body.id).toBe(42);
+});
+
+// --- PUT /coaches/:id ---
+test('PUT /coaches/999 повертає 404 якщо тренер не існує', async () => {
+  // Імітуємо що БД не знайшла жодного запису
+  pool.query.mockResolvedValue([{ affectedRows: 0 }]);
+
+  const res = await request(app)
+    .put('/coaches/999')
+    .send({ coatch_first_name: 'Новий' });
+
+  expect(res.status).toBe(404);
+});
